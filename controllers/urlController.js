@@ -9,6 +9,15 @@ async function handleGenerateNewShortUrl(req, res) {
     return res.status(400).json({ error: "URL is required" });
   }
 
+  const existingURL = await URL.findOne({redirectURL: body.url});
+
+  if(existingURL){
+    return res.render("home",{
+      id : existingURL.shortID,
+    })
+  }
+
+
   const shortID = shortid(8);
   await URL.create({
     shortID: shortID,
@@ -16,7 +25,9 @@ async function handleGenerateNewShortUrl(req, res) {
     visitHistory: [],
   });
 
-  return res.json({ id: shortID });
+  return res.render("home",{
+    id: shortID,
+  }); // isse hamne home k liye redirect kardiya and given a id to it, fir that will see ki uss id k saath kya karna h 
 }
 
 async function handleGetAnalytics(req, res) {
@@ -39,7 +50,7 @@ async function handleRedirect(req, res) {
     );
 
     if (!result) {
-      return res.status(404).send("URL not found");
+      return res.status(404).send("URL ji not found");
     }
 
     res.redirect(result.redirectURL);
