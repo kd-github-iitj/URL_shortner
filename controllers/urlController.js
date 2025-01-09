@@ -23,6 +23,7 @@ async function handleGenerateNewShortUrl(req, res) {
     shortID: shortID,
     redirectURL: body.url,
     visitHistory: [],
+    createdBY: req.user._id, // we created this in authMiddleware.js in wow practice
   });
 
   return res.render("home",{
